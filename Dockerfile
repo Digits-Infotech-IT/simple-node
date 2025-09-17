@@ -1,17 +1,18 @@
-# Use official Node.js LTS image (21 is experimental, 18 is stable)
+# Use official Node.js LTS image
 FROM node:18
 
 # Set working directory
 WORKDIR /usr/src/app
 
-# Create a writable npm cache folder
-RUN mkdir -p /home/node/.npm
+# Give ownership of the workdir to the non-root user
+RUN chown -R node:node /usr/src/app
 
 # Switch to the non-root user that comes with the image
 USER node
 
-# Configure npm to use the writable cache (user-level, not global)
-RUN npm config set cache /home/node/.npm
+# Create a writable npm cache folder
+RUN mkdir -p /home/node/.npm \
+    && npm config set cache /home/node/.npm
 
 # Copy dependency files first (better caching for builds)
 COPY --chown=node:node package*.json ./
