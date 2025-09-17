@@ -27,7 +27,7 @@ pipeline {
                     def dockerImage = docker.image(env.DOCKER_TAG)
                     dockerImage.inside {
                         // point cache to ./tmp or ./node_modules/.cache
-                        sh 'npm config set cache /usr/src/app/.npm-cache --global'
+                        sh 'npm install --cache /tmp/empty-cache --prefer-offline'
                         sh 'npm install'
                         sh 'npm test'
                     }
