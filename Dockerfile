@@ -1,29 +1,29 @@
-# Use the official Node.js image (LTS recommended instead of 21)
+# Use official Node.js LTS image (21 is experimental, 18 is stable)
 FROM node:18
 
 # Set working directory
 WORKDIR /usr/src/app
 
-# Ensure the node user owns the app dir
-RUN chown -R node:node /usr/src/app
+# Create a writable npm cache folder
+RUN mkdir -p /home/node/.npm
 
-# Switch to the non-root user provided by the image
+# Switch to the non-root user that comes with the image
 USER node
 
-# Set a writable npm cache location
-RUN mkdir -p /home/node/.npm && npm config set cache /home/node/.npm --global
+# Configure npm to use the writable cache (user-level, not global)
+RUN npm config set cache /home/node/.npm
 
-# Copy package.json and package-lock.json
+# Copy dependency files first (better caching for builds)
 COPY --chown=node:node package*.json ./
 
-# Install dependencies (no need for chmod, npm does it)
+# Install dependencies
 RUN npm install
 
 # Copy the rest of the application code
 COPY --chown=node:node . .
 
-# Expose app port
+# Expose application port
 EXPOSE 3000
 
-# Start the app
+# Start the application
 CMD ["node", "app.js"]
