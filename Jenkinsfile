@@ -20,12 +20,15 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Test') {
             steps {
                 script {
                     def dockerImage = docker.image(env.DOCKER_TAG)
                     dockerImage.inside {
+                        // Install deps including devDependencies
+                        sh 'npm install'
+                        // Run tests
                         sh 'npm test'
                     }
                 }
