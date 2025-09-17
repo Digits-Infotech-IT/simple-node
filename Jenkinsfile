@@ -26,6 +26,9 @@ pipeline {
                 script {
                     def dockerImage = docker.image(env.DOCKER_TAG)
                     dockerImage.inside {
+                        // Use /tmp/npm-cache as cache folder
+                        sh 'npm config set cache /tmp/npm-cache --global'
+
                         // Install dependencies
                         sh 'npm install'
 
@@ -35,6 +38,7 @@ pipeline {
                 }
             }
         }
+
 
         stage('Deploy to Kubernetes') {
             steps {
