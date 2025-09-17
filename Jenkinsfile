@@ -21,7 +21,7 @@ pipeline {
                 script {
                     dockerImage.inside {
                          // Set execute permissions for node_modules/.bin
-                        sh 'chmod +x node_modules/.bin/mocha'
+                        sh 'chmod +x node_modules/.bin/jest'
                         sh 'npm test'
                     }
                 }
