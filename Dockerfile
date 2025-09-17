@@ -1,23 +1,29 @@
-# Use the official Node.js image from the Docker Hub
-FROM node:21
+# Use the official Node.js image (LTS recommended instead of 21)
+FROM node:18
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /usr/src/app
 
+# Ensure the node user owns the app dir
+RUN chown -R node:node /usr/src/app
+
+# Switch to the non-root user provided by the image
+USER node
+
+# Set a writable npm cache location
+RUN mkdir -p /home/node/.npm && npm config set cache /home/node/.npm --global
+
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY --chown=node:node package*.json ./
 
-
-# Install dependencies
+# Install dependencies (no need for chmod, npm does it)
 RUN npm install
-RUN chmod -R +x node_modules/.bin
 
 # Copy the rest of the application code
-COPY . .
+COPY --chown=node:node . .
 
-# Expose the application port
+# Expose app port
 EXPOSE 3000
 
-# Command to run the application
-CMD [ "node", "app.js" ]
-
+# Start the app
+CMD ["node", "app.js"]
