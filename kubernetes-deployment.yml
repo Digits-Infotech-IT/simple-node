@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: nodejs-app
-          image: nodejs-app:latest
+          image: kprabha25/nodejs-app:latest
           ports:
             - containerPort: 3000
 ---
@@ -23,7 +23,7 @@ kind: Service
 metadata:
   name: nodejs-app-service
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: nodejs-app
   ports:
